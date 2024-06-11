@@ -54,7 +54,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4464355979368850440}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -92,12 +92,13 @@ MonoBehaviour:
   rectTransform: {fileID: 4464355979368850441}
   keyPrefab: {fileID: 1613323982076897969, guid: a014ee7aa4ec6dd44a39a3b629df5124, type: 3}
   backspaceKeyPrefab: {fileID: 4822232983598817541, guid: 88c7a9ada6ae80b4495363fcf35ba72e, type: 3}
+  enterKeyPrefab: {fileID: 4822232983598817541, guid: 7c1e370b274cdb94b83da35e1accb144, type: 3}
   widthPercent: 1
-  heightPercent: 0.149
+  heightPercent: 0.122
   bottomOffset: 0.083
   lines:
   - keys: QWERTYUIOP
   - keys: ASDFGHJKL
-  - keys: ZXCVBNM.
-  scaleValue: 0.638
-  keyXSpacing: 0.053
+  - keys: ',ZXCVBNM.'
+  scaleValue: 0.848
+  keyXSpacing: 0.093
