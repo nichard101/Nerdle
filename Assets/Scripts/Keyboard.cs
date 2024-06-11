@@ -10,6 +10,7 @@ public class Keyboard : MonoBehaviour
     [SerializeField] private Key keyPrefab;
     [SerializeField] private Key backspaceKeyPrefab;
     [SerializeField] private Key enterKeyPrefab;
+    [SerializeField] private TextBoard TextBoardObject;
 
     [Header(" Settings ")]
     [Range(0f, 1f)]
@@ -36,8 +37,6 @@ public class Keyboard : MonoBehaviour
 
         UpdateRectTransform();
         PlaceKeys();
-
-        //rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height/2);
     }
 
     void Update()
@@ -142,6 +141,7 @@ public class Keyboard : MonoBehaviour
 
     private void BackspacePressedCallback(){
         Debug.Log("Backspace");
+        TextBoardObject.Backspace();
     }
     
     private void EnterPressedCallback(){
@@ -150,6 +150,7 @@ public class Keyboard : MonoBehaviour
 
     private void KeyPressedCallback(char key){
         Debug.Log("Key " + key);
+        TextBoardObject.AddToWord(key);
     }
 }
 
