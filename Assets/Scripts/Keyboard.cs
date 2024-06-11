@@ -9,6 +9,7 @@ public class Keyboard : MonoBehaviour
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private Key keyPrefab;
     [SerializeField] private Key backspaceKeyPrefab;
+    [SerializeField] private Key enterKeyPrefab;
 
     [Header(" Settings ")]
     [Range(0f, 1f)]
@@ -63,7 +64,11 @@ public class Keyboard : MonoBehaviour
         for(int i = 0; i < lines.Length; i++){
             for(int j = 0; j < lines[i].keys.Length; j++){
                 char key = lines[i].keys[j];
-                if(key == '.'){
+                if(key == ','){
+                    Key keyInstance = Instantiate(enterKeyPrefab, rectTransform);
+
+                    keyInstance.GetButton().onClick.AddListener(() => EnterPressedCallback());
+                } else if(key == '.'){
                     Key keyInstance = Instantiate(backspaceKeyPrefab, rectTransform);
 
                     keyInstance.GetButton().onClick.AddListener(() => BackspacePressedCallback());
@@ -80,7 +85,7 @@ public class Keyboard : MonoBehaviour
     private void PlaceKeys(){
         int lineCount = lines.Length;
 
-        float lineHeight = rectTransform.rect.height / lineCount;
+        float lineHeight = (rectTransform.rect.height / lineCount);
 
         float keyWidth = lineHeight * scaleValue;
         float xSpacing = keyXSpacing * lineHeight;
@@ -93,7 +98,13 @@ public class Keyboard : MonoBehaviour
             bool containsBackspace = lines[i].keys.Contains(".");
 
             if(containsBackspace){
-                halfKeyCount += .5f;
+                //halfKeyCount += .5f;
+            }
+
+            bool containsEnter = lines[i].keys.Contains(",");
+
+            if(containsEnter){
+                //halfKeyCount += .5f;
             }
 
             float startX = rectTransform.position.x - (keyWidth + xSpacing) * halfKeyCount + (keyWidth+xSpacing)/2;
@@ -101,9 +112,16 @@ public class Keyboard : MonoBehaviour
             
             for(int j = 0; j < lines[i].keys.Length; j++){
                 bool isBackspaceKey = lines[i].keys[j] == '.';
+                bool isEnterKey = lines[i].keys[j] == ',';
                 float keyX = startX + j * (keyWidth+xSpacing);
+
+
                 if(isBackspaceKey){
                     keyX += keyWidth - xSpacing;
+                }
+
+                if(isEnterKey){
+                    keyX -= (keyWidth - xSpacing) ;
                 }
 
                 Vector2 keyPosition = new Vector2(keyX, lineY);
@@ -112,7 +130,7 @@ public class Keyboard : MonoBehaviour
                 keyRectTransform.position = keyPosition;
 
                 float thisKeyWidth = keyWidth;
-                if(isBackspaceKey){
+                if(isBackspaceKey || isEnterKey){
                     thisKeyWidth *= 2;
                 }
 
@@ -126,6 +144,10 @@ public class Keyboard : MonoBehaviour
         Debug.Log("Backspace");
     }
     
+    private void EnterPressedCallback(){
+        Debug.Log("Enter");
+    }
+
     private void KeyPressedCallback(char key){
         Debug.Log("Key " + key);
     }

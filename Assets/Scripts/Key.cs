@@ -11,10 +11,15 @@ public class Key : MonoBehaviour
 
     [Header(" Settings ")]
     [SerializeField] private bool isBackspace;
+    [SerializeField] private bool isEnter;
 
     public void SetKey(char key){
         this.key = key;
         keyText.text = key.ToString();
+    }
+
+    public void SetColour(Color colour){
+        GetComponent<Image>().color = colour;
     }
 
     public Button GetButton(){
@@ -23,5 +28,9 @@ public class Key : MonoBehaviour
 
     public bool IsBackspace(){
         return isBackspace;
+    }
+
+    public bool IsEnter(){
+        return isEnter;
     }
 }
