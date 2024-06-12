@@ -9,11 +9,13 @@ public class GameMaster : MonoBehaviour
 {
     [SerializeField] private TextBoard boardPrefab;
     [SerializeField] private Keyboard keyboardPrefab;
+    [SerializeField] private HUDManager hud;
     [SerializeField] private Color[] colorList;
     private string[] wordList;
     private string[] shuffledWords;
     private string currentWord;
     private int currentIndex = 0;
+    private bool isGameOver;
 
     void Start(){
         wordList = File.ReadAllLines("Assets/sgb-words.txt");
@@ -106,7 +108,27 @@ public class GameMaster : MonoBehaviour
     }
 
     public void ResetGame(){
+        isGameOver = false;
 
+    }
+
+    public void GameLose(){
+        isGameOver = true;
+        hud.GameLose();
+    }
+
+    public void GameWin(){
+        isGameOver = true;
+        hud.GameWin();
+
+    }
+
+    public bool GetGameOver(){
+        return isGameOver;
+    }
+
+    public int GetNumGuesses(){
+        return boardPrefab.GetNumGuesses();
     }
 
     public Color GetColor(int index){

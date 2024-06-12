@@ -15,14 +15,14 @@ public class TextBoard : MonoBehaviour
     private int numGuesses;
     
     private WordGuess[] previousGuesses;
-    private GameMaster gameMaster;
+    private GameMaster gm;
 
     // Start is called before the first frame update
     void Start()
     {
         numGuesses = 0;
         previousGuesses = new WordGuess[5];
-        gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
+        gm = GameObject.Find("GameMaster").GetComponent<GameMaster>();
 
         guess = Instantiate(wordGuessPrefab, rectTransform);
     }
@@ -44,22 +44,26 @@ public class TextBoard : MonoBehaviour
     public void EnterGuess(){
         string word = guess.GetWord();
         if(word.Length == 5){
-            gameMaster.EnterGuess(word);
+            gm.EnterGuess(word);
         }
     }
 
     public void GuessChecked(int[] result){
         guess.SetColors(result);
         guess.SetInactive();
+        numGuesses++;
 
         bool win = CheckIfWin(result);
         if(!win){
-            previousGuesses[numGuesses] = guess;
-            numGuesses++;
-            MoveAllUp();
-            guess = Instantiate(wordGuessPrefab, rectTransform);
+            if(numGuesses == 6){
+                gm.GameLose();
+            } else {
+                previousGuesses[numGuesses-1] = guess;
+                MoveAllUp();
+                guess = Instantiate(wordGuessPrefab, rectTransform);
+            }
         } else {
-            gameMaster.ResetGame();
+            gm.GameWin();
         }
     }
 
@@ -70,6 +74,10 @@ public class TextBoard : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public int GetNumGuesses(){
+        return numGuesses;
     }
 
     public void MoveAllUp(){
