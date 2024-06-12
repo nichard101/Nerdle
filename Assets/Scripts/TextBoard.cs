@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,52 +6,49 @@ using UnityEngine;
 public class TextBoard : MonoBehaviour
 {
     [SerializeField] private RectTransform rectTransform;
-    [SerializeField] private TextBox textBoxPrefab;
     [SerializeField] private WordGuess wordGuessPrefab;
     [SerializeField] private Color[] colorList;
     [SerializeField] private float xSpacing;
-    private string word;
-    private TextBox[] textBoxArray;
-    private TextBox[][] previousGuesses;
+
+    private WordGuess guess;
+    
+    private WordGuess[] previousGuesses;
+    private GameMaster gameMaster;
 
     // Start is called before the first frame update
     void Start()
     {
-        word = "";
-        textBoxArray = new TextBox[5];
-        previousGuesses = new TextBox[6][];
+        previousGuesses = new WordGuess[5];
+        gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
 
-        float startX = rectTransform.position.x-2f*xSpacing;
-        float startY = rectTransform.position.y;
-        for(int i = 0; i < 5; i++){
-            float boxX = startX + xSpacing*i;
-            TextBox newTextBox = Instantiate(textBoxPrefab, rectTransform);
-            newTextBox.SetLetter(' ');
-            textBoxArray[i] = newTextBox;
-            Vector2 boxPosition = new Vector2(boxX, startY);
-
-            RectTransform boxRectTransform = rectTransform.GetChild(i).GetComponent<RectTransform>();
-            boxRectTransform.position = boxPosition;
-        }
+        guess = Instantiate(wordGuessPrefab, rectTransform);
     }
 
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i < word.Length; i++){
-            textBoxArray[i].SetLetter(word[i]);
-        }
+    
     }
 
     public void AddToWord(char letter){
-        if(word.Length < 5){
-            word += letter;
-        }
+        guess.AddToWord(letter);
     }
 
     public void Backspace(){
-        if(word.Length > 0){
-            word.Remove(word.Length-1);
+        guess.Backspace();
+    }
+
+    public void EnterGuess(){
+        string word = guess.GetWord();
+        if(word.Length == 5){
+            int[] result = gameMaster.EnterGuess(word);
+            string output = "";
+            foreach(int i in result){
+                output += i + " ";
+            }
+            Debug.Log(output);
+            
+            guess.SetColors(result);
         }
     }
 }

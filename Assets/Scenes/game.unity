@@ -175,13 +175,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 32715721}
-  textBoxPrefab: {fileID: 4076052488138429313, guid: f6350e1bd7fd9124e996881025009cbd, type: 3}
-  wordGuessPrefab: {fileID: 5759895436919632513, guid: 21ab1b95075ddb84e949355aa287f82f, type: 3}
+  wordGuessPrefab: {fileID: 1428742785262770338, guid: 21ab1b95075ddb84e949355aa287f82f, type: 3}
   colorList:
-  - {r: 0.471, g: 0.486, b: 0.494, a: 0}
-  - {r: 0.788, g: 0.706, b: 0.345, a: 0}
-  - {r: 0.416, g: 0.667, b: 0.392, a: 0}
-  - {r: 1, g: 1, b: 1, a: 0}
+  - {r: 0.471, g: 0.486, b: 0.494, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.788, g: 0.706, b: 0.345, a: 1}
+  - {r: 0.416, g: 0.667, b: 0.392, a: 1}
   xSpacing: 110
 --- !u!114 &32715723
 MonoBehaviour:
@@ -386,6 +385,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 676409910}
   m_CullTransparentMesh: 1
+--- !u!1 &1145193660
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1145193662}
+  - component: {fileID: 1145193661}
+  m_Layer: 0
+  m_Name: GameMaster
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1145193661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145193660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf8eeab2627de94799e8a8d599e3272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardPrefab: {fileID: 32715722}
+--- !u!4 &1145193662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145193660}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 630.9917, y: 1021.6346, z: -12.116508}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1266375656
 GameObject:
   m_ObjectHideFlags: 0

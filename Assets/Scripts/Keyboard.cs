@@ -146,6 +146,7 @@ public class Keyboard : MonoBehaviour
     
     private void EnterPressedCallback(){
         Debug.Log("Enter");
+        TextBoardObject.EnterGuess();
     }
 
     private void KeyPressedCallback(char key){
