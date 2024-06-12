@@ -8,6 +8,8 @@ using UnityEngine;
 public class GameMaster : MonoBehaviour
 {
     [SerializeField] private TextBoard boardPrefab;
+    [SerializeField] private Keyboard keyboardPrefab;
+    [SerializeField] private Color[] colorList;
     private string[] wordList;
     private string[] shuffledWords;
     private string currentWord;
@@ -31,12 +33,12 @@ public class GameMaster : MonoBehaviour
         return wordList;
     }
 
-    public int[] EnterGuess(string g){
+    public void EnterGuess(string g){
         StringBuilder answer = new StringBuilder(currentWord.ToUpper());
         StringBuilder guess = new StringBuilder(g.ToUpper());
         //string answer = DeepCopyString(currentWord).ToUpper();
         //guess = guess.ToUpper();
-        int[] result = {0,0,0,0,0}; // all positions start as grey
+        int[] result = {1,1,1,1,1}; // all positions start as grey
         Debug.Log(answer + " " + guess);
 
         // green checks
@@ -67,15 +69,18 @@ public class GameMaster : MonoBehaviour
                 if(index != -1){
                     answer[index] = ' ';
                     guess[i] = ' ';
-                    if(result[counter] == 0){
+                    if(result[counter] == 1){
                         result[counter] = 2; // sets this position to yellow if not already green
                     }
+                } else {
+                
                 }
             }
             i++;
             counter++;
         }
-        return result;
+        boardPrefab.GuessChecked(result);
+        keyboardPrefab.UpdateColors(g, result);
     }
 
     private int FindIndexOfLetter(string word, char letter){
@@ -100,11 +105,11 @@ public class GameMaster : MonoBehaviour
         return input.Substring(0,index) + input.Substring(index+1);
     }
 
-    private string DeepCopyString(string input){
-        string output = "";
-        foreach(char c in input){
-            output += c.ToString();
-        }
-        return output;
+    public void ResetGame(){
+
+    }
+
+    public Color GetColor(int index){
+        return colorList[index];
     }
 }

@@ -18,12 +18,16 @@ public class Key : MonoBehaviour
         keyText.text = key.ToString();
     }
 
-    public void SetColour(Color colour){
+    public void SetColor(Color colour){
         GetComponent<Image>().color = colour;
     }
 
     public Button GetButton(){
         return GetComponent<Button>();
+    }
+
+    public char GetKey(){
+        return key;
     }
 
     public bool IsBackspace(){

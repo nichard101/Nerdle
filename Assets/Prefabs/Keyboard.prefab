@@ -93,6 +93,7 @@ MonoBehaviour:
   keyPrefab: {fileID: 1613323982076897969, guid: a014ee7aa4ec6dd44a39a3b629df5124, type: 3}
   backspaceKeyPrefab: {fileID: 4822232983598817541, guid: 88c7a9ada6ae80b4495363fcf35ba72e, type: 3}
   enterKeyPrefab: {fileID: 4822232983598817541, guid: 7c1e370b274cdb94b83da35e1accb144, type: 3}
+  TextBoardObject: {fileID: 0}
   widthPercent: 1
   heightPercent: 0.122
   bottomOffset: 0.083
@@ -102,3 +103,8 @@ MonoBehaviour:
   - keys: ',ZXCVBNM.'
   scaleValue: 0.848
   keyXSpacing: 0.093
+  colorList:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.471, g: 0.486, b: 0.494, a: 1}
+  - {r: 0.788, g: 0.706, b: 0.345, a: 1}
+  - {r: 0.416, g: 0.667, b: 0.392, a: 1}

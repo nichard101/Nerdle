@@ -29,8 +29,16 @@ public class Keyboard : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float keyXSpacing;
 
+    [Header(" Colours ")]
+    [SerializeField] private Color[] colorList;
+
+    private List<Key> keyList;
+    private GameMaster gm;
+
     IEnumerator Start()
     {
+        gm = GameObject.Find("GameMaster").GetComponent<GameMaster>();
+        keyList = new List<Key>();
         CreateKeys();
         
         yield return null;
@@ -65,16 +73,16 @@ public class Keyboard : MonoBehaviour
                 char key = lines[i].keys[j];
                 if(key == ','){
                     Key keyInstance = Instantiate(enterKeyPrefab, rectTransform);
-
+                    
                     keyInstance.GetButton().onClick.AddListener(() => EnterPressedCallback());
                 } else if(key == '.'){
                     Key keyInstance = Instantiate(backspaceKeyPrefab, rectTransform);
-
+                    
                     keyInstance.GetButton().onClick.AddListener(() => BackspacePressedCallback());
                 } else {
                     Key keyInstance = Instantiate(keyPrefab, rectTransform);
                     keyInstance.SetKey(key);
-                    
+                    keyList.Add(keyInstance.GetComponent<Key>());                    
                     keyInstance.GetButton().onClick.AddListener(() => KeyPressedCallback(key));
                 }
             }
@@ -152,6 +160,18 @@ public class Keyboard : MonoBehaviour
     private void KeyPressedCallback(char key){
         Debug.Log("Key " + key);
         TextBoardObject.AddToWord(key);
+    }
+
+    public void UpdateColors(string letters, int[] nums){
+        for(int j = 0; j < letters.Length; j++){
+            for(int i = 0; i < keyList.Count; i++){
+                if(letters[j] == keyList[i].GetKey()){
+                    Debug.Log(letters[j]);
+                    keyList[i].SetColor(gm.GetColor(nums[j]));
+                    continue;
+                }
+            }
+        }
     }
 }
 

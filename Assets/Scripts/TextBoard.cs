@@ -9,8 +9,10 @@ public class TextBoard : MonoBehaviour
     [SerializeField] private WordGuess wordGuessPrefab;
     [SerializeField] private Color[] colorList;
     [SerializeField] private float xSpacing;
+    [SerializeField] private Animator anim;
 
     private WordGuess guess;
+    private int numGuesses;
     
     private WordGuess[] previousGuesses;
     private GameMaster gameMaster;
@@ -18,6 +20,7 @@ public class TextBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        numGuesses = 0;
         previousGuesses = new WordGuess[5];
         gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
 
@@ -41,14 +44,37 @@ public class TextBoard : MonoBehaviour
     public void EnterGuess(){
         string word = guess.GetWord();
         if(word.Length == 5){
-            int[] result = gameMaster.EnterGuess(word);
-            string output = "";
-            foreach(int i in result){
-                output += i + " ";
+            gameMaster.EnterGuess(word);
+        }
+    }
+
+    public void GuessChecked(int[] result){
+        guess.SetColors(result);
+        guess.SetInactive();
+
+        bool win = CheckIfWin(result);
+        if(!win){
+            previousGuesses[numGuesses] = guess;
+            numGuesses++;
+            MoveAllUp();
+            guess = Instantiate(wordGuessPrefab, rectTransform);
+        } else {
+            gameMaster.ResetGame();
+        }
+    }
+
+    public bool CheckIfWin(int[] result){
+        foreach(int i in result){
+            if(i != 3){
+                return false;
             }
-            Debug.Log(output);
-            
-            guess.SetColors(result);
+        }
+        return true;
+    }
+
+    public void MoveAllUp(){
+        for(int i = 0; i < numGuesses; i++){
+            previousGuesses[i].MoveUp();
         }
     }
 }

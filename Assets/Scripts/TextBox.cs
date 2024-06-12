@@ -30,7 +30,7 @@ public class TextBox : MonoBehaviour
         textBox.text = letter.ToString();
     }
 
-    public void SetColour(Color color){
+    public void SetColor(Color color){
         this.color = color;
         GetComponent<Image>().color = color;
     }
