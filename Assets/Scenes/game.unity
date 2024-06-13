@@ -3133,24 +3133,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4464355979368850442, guid: 81b26b2a1541a314281202f145fb58de, type: 3}
       propertyPath: scaleValue
-      value: 0.902
-      objectReference: {fileID: 0}
-    - target: {fileID: 4464355979368850442, guid: 81b26b2a1541a314281202f145fb58de, type: 3}
-      propertyPath: bottomOffset
-      value: 0.08
+      value: 0.948
       objectReference: {fileID: 0}
     - target: {fileID: 4464355979368850442, guid: 81b26b2a1541a314281202f145fb58de, type: 3}
       propertyPath: TextBoardObject
       value: 
       objectReference: {fileID: 32715722}
-    - target: {fileID: 4464355979368850443, guid: 81b26b2a1541a314281202f145fb58de, type: 3}
-      propertyPath: m_Color.a
-      value: 0.5019608
-      objectReference: {fileID: 0}
-    - target: {fileID: 4464355979368850443, guid: 81b26b2a1541a314281202f145fb58de, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81b26b2a1541a314281202f145fb58de, type: 3}
 --- !u!1 &4922005165948156441

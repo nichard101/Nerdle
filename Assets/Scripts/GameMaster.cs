@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class GameMaster : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class GameMaster : MonoBehaviour
     [SerializeField] private Keyboard keyboardPrefab;
     [SerializeField] private HUDManager hud;
     [SerializeField] private Color[] colorList;
-    private string[] wordList;
     private int[] shuffled;
     private string currentWord;
     private int currentIndex;
@@ -19,15 +19,17 @@ public class GameMaster : MonoBehaviour
     private bool isGameOver;
     private GuessHistoryStruct guessHistory;
     private Dictionary<int, int> scoreList;
+    private Dictionary<int, string> wordList;
 
     void Start(){
-        wordList = File.ReadAllLines("Assets/sgb-words.txt");
-        //Save();
-        //currentWord = "sofia";
-            
-        if(!Load()){    // if the load fails for whatever reason, generate a blank slate
+        if(!LoadDictionary() || !LoadShuffle()){
             scoreList = new Dictionary<int, int>();
-            shuffled = ShuffleList(wordList.Length);
+            wordList = GameData.ConvertDictionary();
+            SaveDictionary();
+            shuffled = ShuffleList(wordList.Count);
+            SaveShuffle();
+        }   
+        if(!Load()){    // if the load fails for whatever reason, generate a blank slate
             scoreList.Add(0,0);
             scoreList.Add(1,0);
             scoreList.Add(2,0);
@@ -38,41 +40,100 @@ public class GameMaster : MonoBehaviour
             currentIndex = 0;
             numGuesses = 0;
         }
-        if(currentIndex == wordList.Length){            // if we reach the end of the random list, reroll it all and start again
-            shuffled = ShuffleList(wordList.Length);
+        if(currentIndex == wordList.Count){            // if we reach the end of the random list, reroll it all and start again
+            shuffled = ShuffleList(wordList.Count);
+            SaveShuffle();
             currentIndex = 0;
             Save();
         }
         currentWord = wordList[shuffled[currentIndex]];
     }
 
-    private void Save(){
-        string test = "hello";
-        string shuffleOrder = IntArrToString(shuffled);
+    private void Save(){        
         string[] saveContents = new string[]{
-            ""+IntArrToString(shuffled),
             ""+currentIndex,
             ""+(0 + " " + scoreList[0] + " " + 1 + " " + scoreList[1] + " " + 2 + " " + scoreList[2] + " " + 3 + " " + scoreList[3] + " " + 4 + " " + scoreList[4] + " " + 5 + " " + scoreList[5] + " " + 6 + " " + scoreList[6])
         };
         string saveString = string.Join("|", saveContents);
-        File.WriteAllText(Application.dataPath + "/save.txt", saveString);
+        
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        FileStream fs = new FileStream(GetPath(), FileMode.Create);
+        formatter.Serialize(fs, saveString);
+        fs.Close();
+        
         Debug.Log("Saved!");
     }
 
     private bool Load(){
         try{
-            string saveString = File.ReadAllText(Application.dataPath + "/save.txt");
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            FileStream fs = new FileStream(GetPath(), FileMode.Open);
+            string saveString = formatter.Deserialize(fs) as string;
+            fs.Close();
+            
             string[] saveArray = saveString.Split("|");
-            shuffled = StringToIntArr(saveArray[0]); // shuffled word order
-            currentIndex = int.Parse(saveArray[1]);  // current word index
-            FillDictionary(saveArray[2]);            // score history
+            currentIndex = int.Parse(saveArray[0]);  // current word index
+            FillDictionary(saveArray[1]);            // score history
             Debug.Log("Loaded!");
             return true;
         } catch(Exception e){
             Debug.Log("Load failed!");
             return false;
         }
-        
+    }
+
+    private bool LoadDictionary(){
+        try{
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream fs = new FileStream(GetPathDict(), FileMode.Open);
+            wordList = formatter.Deserialize(fs) as Dictionary<int, string>;
+            fs.Close();
+            return true;
+        } catch(Exception e){
+            Debug.Log("Dictionary load failed!");
+            return false;
+        }
+    }
+
+    private void SaveDictionary(){
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream fs = new FileStream(GetPathDict(), FileMode.Create);
+        formatter.Serialize(fs, wordList);
+        fs.Close();
+    }
+
+    private bool LoadShuffle(){
+        try{
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream fs = new FileStream(GetPathShuffle(), FileMode.Open);
+            shuffled = formatter.Deserialize(fs) as int[];
+            fs.Close();
+            return true;
+        } catch(Exception e){
+            Debug.Log("Dictionary load failed!");
+            return false;
+        }
+    }
+
+    private void SaveShuffle(){
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream fs = new FileStream(GetPathShuffle(), FileMode.Create);
+        formatter.Serialize(fs, shuffled);
+        fs.Close();
+    }
+
+    private string GetPath(){
+        return Application.persistentDataPath + "/data.qnd";
+    }
+
+    private string GetPathDict(){
+        return Application.persistentDataPath + "/dict.qnd";
+    }
+
+    private string GetPathShuffle(){
+        return Application.persistentDataPath + "/shuffle.qnd";
     }
 
     private void FillDictionary(string input){
@@ -100,12 +161,7 @@ public class GameMaster : MonoBehaviour
     }
 
     private bool IsValidWord(string word){
-        foreach(string w in wordList){
-            if(w.ToUpper().Equals(word.ToUpper())){
-                return true;
-            }
-        }
-        return false;
+        return wordList.ContainsValue(word.ToLower());
     }
 
     public void EnterGuess(string g){
@@ -157,7 +213,7 @@ public class GameMaster : MonoBehaviour
                 i++;
                 counter++;
             }
-            Save();
+            //Save();
             hud.UpdateText();
             boardPrefab.GuessChecked(result);
             keyboardPrefab.UpdateColors(g, result);
@@ -212,20 +268,4 @@ public class GameMaster : MonoBehaviour
         return scoreList;
     }
 
-    public string IntArrToString(int[] array){
-        string output = "";
-        for(int i = 0; i < array.Length; i++){
-            output += array[i] + " ";
-        }
-        return output.Trim();
-    }
-
-    public int[] StringToIntArr(string input){
-        string[] split = input.Split(" ");
-        int[] output = new int[split.Length];
-        for(int i = 0; i < split.Length; i++){
-            output[i] = int.Parse(split[i]);
-        }
-        return output;
-    }
 }
