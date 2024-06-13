@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -96,15 +96,10 @@ MonoBehaviour:
   TextBoardObject: {fileID: 0}
   widthPercent: 1
   heightPercent: 0.122
-  bottomOffset: 0.083
+  bottomOffset: 0.08
   lines:
   - keys: QWERTYUIOP
   - keys: ASDFGHJKL
   - keys: ',ZXCVBNM.'
-  scaleValue: 0.848
+  scaleValue: 0.902
   keyXSpacing: 0.093
-  colorList:
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0.471, g: 0.486, b: 0.494, a: 1}
-  - {r: 0.788, g: 0.706, b: 0.345, a: 1}
-  - {r: 0.416, g: 0.667, b: 0.392, a: 1}
