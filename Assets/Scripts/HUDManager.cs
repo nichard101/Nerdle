@@ -20,8 +20,6 @@ public class HUDManager : MonoBehaviour
     {
         if(!gm.GetGameOver()){
             
-            
-
         }
     }
 
