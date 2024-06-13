@@ -15,7 +15,6 @@ public class TextBoard : MonoBehaviour
     [SerializeField] private Image im;
 
     private WordGuess guess;
-    private int numGuesses;
     
     private List<WordGuess> previousGuesses;
     private GameMaster gm;
@@ -26,7 +25,6 @@ public class TextBoard : MonoBehaviour
     {
         float yPos = 0f;
         guessPos = new Vector2(0f, yPos);
-        numGuesses = 0;
         previousGuesses = new List<WordGuess>();
         gm = GameObject.Find("GameMaster").GetComponent<GameMaster>();
         im = GetComponent<Image>();
@@ -59,11 +57,10 @@ public class TextBoard : MonoBehaviour
     public void GuessChecked(int[] result){
         guess.SetColors(result);
         guess.SetInactive();
-        numGuesses++;
 
         bool win = CheckIfWin(result);
         if(!win){
-            if(numGuesses == 6){
+            if(gm.GetNumGuesses() == 6){
                 gm.GameLose();
             } else {
                 previousGuesses.Add(guess);
@@ -85,11 +82,15 @@ public class TextBoard : MonoBehaviour
     }
 
     public int GetNumGuesses(){
-        return numGuesses;
+        return gm.GetNumGuesses();
+    }
+
+    public void SetGuessHistory(Dictionary<char, int>[] scoreHistory){
+
     }
 
     public void MoveAllUp(){
-        for(int i = 0; i < numGuesses; i++){
+        for(int i = 0; i < gm.GetNumGuesses(); i++){
             previousGuesses[i].MoveUp();
         }
     }

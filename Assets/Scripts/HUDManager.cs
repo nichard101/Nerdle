@@ -19,14 +19,19 @@ public class HUDManager : MonoBehaviour
     void Update()
     {
         if(!gm.GetGameOver()){
-            int guesses = gm.GetNumGuesses();
-            string message = " Guesses Left";
-            if(guesses == 5){
-                message = " Guess Left";
-            }
-            textPrefab.text = (6-guesses) + message;
+            
+            
 
         }
+    }
+
+    public void UpdateText(){
+        int guesses = gm.GetNumGuesses();
+        string message = " Guesses Left";
+        if(guesses == 5){
+            message = " Guess Left";
+        }
+        textPrefab.text = (6-guesses) + message;
     }
 
     public void Reset(){
@@ -36,6 +41,10 @@ public class HUDManager : MonoBehaviour
     public void GameWin(){
         textPrefab.text = "You Win!";
         buttonPrefab.gameObject.SetActive(true);
+    }
+
+    public void InvalidWord(){
+        textPrefab.text = "Not a valid word";
     }
 
     public void GameLose(string answer){
