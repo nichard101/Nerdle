@@ -30,15 +30,17 @@ public class Keyboard : MonoBehaviour
     [SerializeField] private float keyXSpacing;
 
     [Header(" Colours ")]
-    [SerializeField] private Color[] colorList;
+    //[SerializeField] private Color[] colorList;
 
     private List<Key> keyList;
+    private Dictionary<char, int> colorDict;
     private GameMaster gm;
 
     IEnumerator Start()
     {
         gm = GameObject.Find("GameMaster").GetComponent<GameMaster>();
         keyList = new List<Key>();
+        colorDict = new Dictionary<char, int>();
         CreateKeys();
         
         yield return null;
@@ -50,7 +52,8 @@ public class Keyboard : MonoBehaviour
     void Update()
     {
         UpdateRectTransform();
-        PlaceKeys();
+        //PlaceKeys();
+        SetColors();
     }
 
     private void UpdateRectTransform(){
@@ -82,7 +85,8 @@ public class Keyboard : MonoBehaviour
                 } else {
                     Key keyInstance = Instantiate(keyPrefab, rectTransform);
                     keyInstance.SetKey(key);
-                    keyList.Add(keyInstance.GetComponent<Key>());                    
+                    keyList.Add(keyInstance.GetComponent<Key>());
+                    colorDict.Add(key, 0);                    
                     keyInstance.GetButton().onClick.AddListener(() => KeyPressedCallback(key));
                 }
             }
@@ -162,12 +166,26 @@ public class Keyboard : MonoBehaviour
         TextBoardObject.AddToWord(key);
     }
 
+    public void ResetColors(){
+        for(int i = 0; i < keyList.Count; i++){
+            keyList[i].SetColor(gm.GetColor(0));
+        }
+    }
+
+    public void SetColors(){
+        for(int i = 0; i < keyList.Count; i++){
+            keyList[i].SetColor(gm.GetColor(colorDict[keyList[i].GetKey()]));
+        }
+    }
+
     public void UpdateColors(string letters, int[] nums){
         for(int j = 0; j < letters.Length; j++){
             for(int i = 0; i < keyList.Count; i++){
                 if(letters[j] == keyList[i].GetKey()){
                     Debug.Log(letters[j]);
-                    keyList[i].SetColor(gm.GetColor(nums[j]));
+                    if(colorDict[letters[j]] < nums[j]){
+                        colorDict[letters[j]] = nums[j];
+                    }
                     continue;
                 }
             }
