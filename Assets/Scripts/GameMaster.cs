@@ -12,77 +12,131 @@ public class GameMaster : MonoBehaviour
     [SerializeField] private HUDManager hud;
     [SerializeField] private Color[] colorList;
     private string[] wordList;
-    private string[] shuffledWords;
+    private int[] shuffled;
     private string currentWord;
-    private int currentIndex = 0;
+    private int currentIndex;
+    private int numGuesses;
     private bool isGameOver;
+    private Dictionary<int, int> scoreList;
 
     void Start(){
         wordList = File.ReadAllLines("Assets/sgb-words.txt");
-        shuffledWords = ShuffleList(wordList);
-        //currentWord = shuffledWords[currentIndex];
-        currentWord = "sofia";
+        //Save();
+        //currentWord = "sofia";
+            shuffled = ShuffleList(wordList.Length);
+        if(Load()){
+            scoreList = new Dictionary<int, int>();
+            scoreList.Add(0,0);
+            scoreList.Add(1,0);
+            scoreList.Add(2,0);
+            scoreList.Add(3,0);
+            scoreList.Add(4,0);
+            scoreList.Add(5,0);
+            scoreList.Add(6,0);
+            currentIndex = 0;
+            numGuesses = 0;
+        }
+        currentWord = wordList[shuffled[currentIndex]];
     }
 
-    private string[] ShuffleList(string[] wordList){
-        for (int t = 0; t < wordList.Length; t++ )
-        {
-            string tmp = wordList[t];
-            int r = UnityEngine.Random.Range(t, wordList.Length);
-            wordList[t] = wordList[r];
-            wordList[r] = tmp;
+    private void Save(){
+        string test = "hello";
+        string shuffleOrder = IntArrToString(shuffled);
+        string[] saveContents = new string[]{
+            ""+(0 + " " + scoreList[0] + " " + 1 + " " + scoreList[1] + " " + 2 + " " + scoreList[2] + " " + 3 + " " + scoreList[3] + " " + 4 + " " + scoreList[4] + " " + 5 + " " + scoreList[5] + " " + 6 + " " + scoreList[6]),
+            ""+currentIndex
+        };
+        string saveString = string.Join("|", saveContents);
+        File.WriteAllText(Application.dataPath + "/save.txt", saveString);
+        Debug.Log("Saved!");
+    }
+
+    private bool Load(){
+        string saveString = File.ReadAllText(Application.dataPath + "/save.txt");
+        string[] saveArray = saveString.Split("|");
+        Debug.Log(saveString);
+        return true;
+    }
+
+    private int[] ShuffleList(int length){
+        int[] intArray = new int[length];
+        for(int i = 0; i < length; i++){
+            intArray[i] = i;
         }
-        return wordList;
+
+        for (int t = 0; t < length; t++ )
+        {
+            int tmp = intArray[t];
+            int r = UnityEngine.Random.Range(t, length);
+            intArray[t] = intArray[r];
+            intArray[r] = tmp;
+        }
+        return intArray;
+    }
+
+    private bool IsValidWord(string word){
+        foreach(string w in wordList){
+            if(w.ToUpper().Equals(word.ToUpper())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void EnterGuess(string g){
-        StringBuilder answer = new StringBuilder(currentWord.ToUpper());
-        StringBuilder guess = new StringBuilder(g.ToUpper());
-        //string answer = DeepCopyString(currentWord).ToUpper();
-        //guess = guess.ToUpper();
-        int[] result = {1,1,1,1,1}; // all positions start as grey
-        Debug.Log(answer + " " + guess);
-
-        // green checks
-        int i = 0;
-        int counter = 0;
-
-        while(i < 5){
-            Debug.Log(answer + " " + answer.Length);
-            char a = answer[i];
-            char b = guess[i];
-            if(a == b && a != ' '){
-                answer[i] = ' ';
-                guess[i] = ' ';
-                result[counter] = 3; // sets this position to green
-            }
-            i++;
+        if(!IsValidWord(g)){
+            hud.InvalidWord();
+        } else {
+            numGuesses++;
+            StringBuilder answer = new StringBuilder(currentWord.ToUpper());
+            StringBuilder guess = new StringBuilder(g.ToUpper());
             
-            counter++;
-        }
+            int[] result = {1,1,1,1,1}; // all positions start as grey
+            Debug.Log(answer + " " + guess);
 
-        // yellow checks
-        i = 0;
-        counter = 0;
-        while(i < 5){
-            char a = guess[i];
-            if(a != ' '){
-                int index = FindIndexOfLetter(answer.ToString(), a);
-                if(index != -1){
-                    answer[index] = ' ';
+            // green checks
+            int i = 0;
+            int counter = 0;
+
+            while(i < 5){
+                Debug.Log(answer + " " + answer.Length);
+                char a = answer[i];
+                char b = guess[i];
+                if(a == b && a != ' '){
+                    answer[i] = ' ';
                     guess[i] = ' ';
-                    if(result[counter] == 1){
-                        result[counter] = 2; // sets this position to yellow if not already green
-                    }
-                } else {
-                
+                    result[counter] = 3; // sets this position to green
                 }
+                i++;
+                
+                counter++;
             }
-            i++;
-            counter++;
+
+            // yellow checks
+            i = 0;
+            counter = 0;
+            while(i < 5){
+                char a = guess[i];
+                if(a != ' '){
+                    int index = FindIndexOfLetter(answer.ToString(), a);
+                    if(index != -1){
+                        answer[index] = ' ';
+                        guess[i] = ' ';
+                        if(result[counter] == 1){
+                            result[counter] = 2; // sets this position to yellow if not already green
+                        }
+                    } else {
+                    
+                    }
+                }
+                i++;
+                counter++;
+            }
+            Save();
+            hud.UpdateText();
+            boardPrefab.GuessChecked(result);
+            keyboardPrefab.UpdateColors(g, result);
         }
-        boardPrefab.GuessChecked(result);
-        keyboardPrefab.UpdateColors(g, result);
     }
 
     private int FindIndexOfLetter(string word, char letter){
@@ -94,19 +148,6 @@ public class GameMaster : MonoBehaviour
         return -1;
     }
 
-    private string RemoveLetterAtIndex(string input, int index){
-        if(input.Length==1){
-            return "";
-        }
-        if(index==0){
-            return input.Substring(1);
-        }
-        if(index==4){
-            return input.Substring(0,4);
-        }
-        return input.Substring(0,index) + input.Substring(index+1);
-    }
-
     public void ResetGame(){
         isGameOver = false;
         keyboardPrefab.ResetColors();
@@ -115,11 +156,16 @@ public class GameMaster : MonoBehaviour
 
     public void GameLose(){
         isGameOver = true;
+        scoreList[0] += 1;
+        Debug.Log(scoreList[0]);
+        Save();
         hud.GameLose(currentWord);
     }
 
     public void GameWin(){
         isGameOver = true;
+        scoreList[numGuesses] += 1;
+        Save();
         hud.GameWin();
     }
 
@@ -128,10 +174,27 @@ public class GameMaster : MonoBehaviour
     }
 
     public int GetNumGuesses(){
-        return boardPrefab.GetNumGuesses();
+        return numGuesses;
     }
 
     public Color GetColor(int index){
         return colorList[index];
+    }
+
+    public string IntArrToString(int[] array){
+        string output = "";
+        for(int i = 0; i < array.Length; i++){
+            output += array[i] + " ";
+        }
+        return output.Trim();
+    }
+
+    public int[] StringToIntArr(string input){
+        string[] split = input.Split(" ");
+        int[] output = new int[split.Length];
+        for(int i = 0; i < split.Length; i++){
+            output[i] = int.Parse(split[i]);
+        }
+        return output;
     }
 }
