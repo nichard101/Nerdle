@@ -7,7 +7,9 @@ public class HUDManager : MonoBehaviour
 {
     [SerializeField] private Text textPrefab;
     [SerializeField] private Button buttonPrefab;
+    [SerializeField] private Animator anim;
     private GameMaster gm;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +45,7 @@ public class HUDManager : MonoBehaviour
 
     public void InvalidWord(){
         textPrefab.text = "Not a valid word";
+        anim.Play("TextFlash", -1, 0f);
     }
 
     public void GameLose(string answer){

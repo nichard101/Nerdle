@@ -13,6 +13,7 @@ public class TextBoard : MonoBehaviour
     [SerializeField] private float xSpacing;
     [SerializeField] private Animator anim;
     [SerializeField] private Image im;
+    [SerializeField] private HUDManager hud;
 
     private WordGuess guess;
     
@@ -45,6 +46,7 @@ public class TextBoard : MonoBehaviour
 
     public void Backspace(){
         guess.Backspace();
+        hud.UpdateText();
     }
 
     public void EnterGuess(){
