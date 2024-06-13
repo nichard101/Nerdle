@@ -51,7 +51,7 @@ public class Keyboard : MonoBehaviour
 
     void Update()
     {
-        UpdateRectTransform();
+        //UpdateRectTransform();
         //PlaceKeys();
         SetColors();
     }
@@ -96,10 +96,10 @@ public class Keyboard : MonoBehaviour
     private void PlaceKeys(){
         int lineCount = lines.Length;
 
-        float lineHeight = (rectTransform.rect.height / lineCount);
+        float lineHeight = 1.5f*(rectTransform.rect.height / lineCount);
 
-        float keyWidth = lineHeight * scaleValue;
-        float xSpacing = keyXSpacing * lineHeight;
+        float keyWidth = lineHeight * scaleValue / 1.5f;
+        float xSpacing = keyXSpacing * lineHeight / 1.5f;
 
         int currentIndex = 0;
 
@@ -128,11 +128,11 @@ public class Keyboard : MonoBehaviour
 
 
                 if(isBackspaceKey){
-                    keyX += keyWidth - xSpacing;
+                    keyX += (keyWidth/1.5f) - xSpacing;
                 }
 
                 if(isEnterKey){
-                    keyX -= (keyWidth - xSpacing) ;
+                    keyX -= ((keyWidth/1.5f) - xSpacing) ;
                 }
 
                 Vector2 keyPosition = new Vector2(keyX, lineY);
@@ -142,10 +142,10 @@ public class Keyboard : MonoBehaviour
 
                 float thisKeyWidth = keyWidth;
                 if(isBackspaceKey || isEnterKey){
-                    thisKeyWidth *= 2;
+                    thisKeyWidth *= 1.5f;
                 }
 
-                keyRectTransform.sizeDelta = new Vector2(thisKeyWidth, keyWidth);
+                keyRectTransform.sizeDelta = new Vector2(thisKeyWidth, keyWidth*1.5f);
                 currentIndex++;
             }
         }
