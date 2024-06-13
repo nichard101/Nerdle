@@ -85,8 +85,30 @@ public class TextBoard : MonoBehaviour
         return gm.GetNumGuesses();
     }
 
-    public void SetGuessHistory(Dictionary<char, int>[] scoreHistory){
+    public void SetGuessHistory(char[][] letters, int[][] colors){
+        for(int i = 0; i < letters.Length; i++){
+            WordGuess tempGuess = Instantiate(wordGuessPrefab);
+            for(int j = 0; j < 5; j++){
+                tempGuess.AddToWord(letters[i][j]);
+            }
+            tempGuess.SetColors(colors[i]);
+            guess = tempGuess;
+            previousGuesses.Add(tempGuess);
+            if(i < 5){
+                MoveAllUp();
+            }
+        }
+    }
 
+    public GuessHistoryStruct GetGuessHistory(){
+        GuessHistoryStruct output = new GuessHistoryStruct();
+        int[][] colorHistory = new int[previousGuesses.Count][];
+        char[][] guessHistory = new char[previousGuesses.Count][];
+        for(int i = 0; i < colorHistory.Length; i++){
+            colorHistory[i] = previousGuesses[i].GetColors();
+            guessHistory[i] = previousGuesses[i].GetWord().ToCharArray();
+        }
+        return output;
     }
 
     public void MoveAllUp(){
@@ -98,4 +120,9 @@ public class TextBoard : MonoBehaviour
     public void Reset(){
         SceneManager.LoadScene("game");
     }
+}
+
+public struct GuessHistoryStruct{
+    public char[][] guesses;
+    public int[][] colors;
 }

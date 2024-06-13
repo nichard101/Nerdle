@@ -12,6 +12,7 @@ public class WordGuess : MonoBehaviour
     [SerializeField] private Color[] colorList;
     private TextBox[] textBoxArray;
     private string word;
+    private int[] colors;
     private Animator anim;
     private GameMaster gm;
     // Start is called before the first frame update
@@ -75,9 +76,14 @@ public class WordGuess : MonoBehaviour
     }
 
     public void SetColors(int[] colors){
+        this.colors = colors;
         for(int i = 0; i < 5; i++){
             textBoxArray[i].SetColor(gm.GetColor(colors[i]));
         }
+    }
+
+    public int[] GetColors(){
+        return colors;
     }
 
     public string GetWord(){
