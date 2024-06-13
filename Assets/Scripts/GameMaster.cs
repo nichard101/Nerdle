@@ -109,18 +109,18 @@ public class GameMaster : MonoBehaviour
 
     public void ResetGame(){
         isGameOver = false;
-
+        keyboardPrefab.ResetColors();
+        boardPrefab.Reset();
     }
 
     public void GameLose(){
         isGameOver = true;
-        hud.GameLose();
+        hud.GameLose(currentWord);
     }
 
     public void GameWin(){
         isGameOver = true;
         hud.GameWin();
-
     }
 
     public bool GetGameOver(){

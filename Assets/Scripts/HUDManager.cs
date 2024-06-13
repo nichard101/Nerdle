@@ -38,8 +38,8 @@ public class HUDManager : MonoBehaviour
         buttonPrefab.gameObject.SetActive(true);
     }
 
-    public void GameLose(){
-        textPrefab.text = "You Lose";
+    public void GameLose(string answer){
+        textPrefab.text = "Answer: " + answer.Substring(0,1).ToUpper() + answer.Substring(1);
         buttonPrefab.gameObject.SetActive(true);
     }
 }
